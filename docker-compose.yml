@@ -11,8 +11,7 @@ services:
     build: ./backend
     restart: always
     environment:
-      - MONGO_URI=mongodb+srv://chywizz:BwtgzLtNFgXzFVO2@cluster0.ioxmdsu.mongodb.net/?appName=Cluster0
-      - NODE_ENV=production
+      - MONGO_URI=mongo_url
       - FRONTEND_URL=http://localhost:3000
     depends_on:
       - mongo
