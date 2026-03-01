@@ -10,20 +10,18 @@ services:
   backend:
     build: ./backend
     restart: always
-    environment:
-      - MONGO_URI=mongodb+srv://chywizz:BwtgzLtNFgXzFVO2@cluster0.ioxmdsu.mongodb.net/?appName=Cluster0
-      - NODE_ENV=production
-      - FRONTEND_URL=http://localhost:3000
+    env_file: 
+      - ./backend/.env.prod
     depends_on:
       - mongo
-    ports:
-      - "5000:5000"
+    expose:
+      - "5000"
 
   frontend:
     build: ./frontend
     restart: always
     ports:
-      - "3000:80"
+      - "80:80"
     depends_on:
       - backend
 
