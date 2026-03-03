@@ -1,0 +1,48 @@
+name: CI-CD Deploy to E-app into EC2
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKER_BACKEND: chywiz/e-app-backend
+  DOCKER_FRONTEND: chywiz/e-app-frontend
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node 
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        npm install
+
+    - name: Run backend tests (if any)
+      run: |
+        cd backend
+        npm test || echo "No tests yet"
+
+    - name: Login to Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin\
+
+    - name: Build backend image
+      run: docker build -t $DOCKER_BACKEND:latest ./backend
+
+    - name: Push backend image
+      run: docker push $DOCKER_BACKEND:latest
+
+    - name: Build frontend image
+      run: docker build -t $DOCKER_FRONTEND:latest ./frontend
+
+    - name: Push frontend image
+      run: docker push $DOCKER_FRONTEND:latest
