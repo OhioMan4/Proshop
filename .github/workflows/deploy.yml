@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   DOCKER_BACKEND: chywiz/e-app-backend
   DOCKER_FRONTEND: chywiz/e-app-frontend
