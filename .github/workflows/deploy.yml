@@ -5,9 +5,7 @@ on:
     branches:
       - main
 
-permissions:
-  id-token: write
-  contents: read
+
 
 env:
   DOCKER_BACKEND: chywiz/e-app-backend
@@ -16,6 +14,9 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout Repository
