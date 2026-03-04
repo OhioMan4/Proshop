@@ -19,9 +19,11 @@
 
 ## 🏗️ Architecture Diagram
 
-> _Add your architecture diagram below_
 
-![Architecture](./docs/architecture.png)
+
+![EndUser](./docs//screenshots/application.png)
+
+![CI_CD](./docs//screenshots/CI_CD.png)
 
 ---
 
