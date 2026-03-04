@@ -12,7 +12,7 @@ env:
   DOCKER_FRONTEND: chywiz/e-app-frontend
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -45,15 +45,15 @@ jobs:
         run: docker push $DOCKER_FRONTEND:latest
 
   deploy:
-    needs: build
+    needs: build-and-push
     runs-on: self-hosted
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Login Docker Hub
-        run: echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Pull latest images
         run: docker compose pull
