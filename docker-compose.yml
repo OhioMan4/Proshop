@@ -5,8 +5,6 @@ services:
     restart: always
     env_file: 
       - ./backend/.env.prod
-    depends_on:
-      - mongo
     expose:
       - "5000"
 
@@ -17,6 +15,3 @@ services:
       - "80:80"
     depends_on:
       - backend
-
-volumes:
-  mongo-data:
