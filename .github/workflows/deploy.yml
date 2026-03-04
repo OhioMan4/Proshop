@@ -44,18 +44,22 @@ jobs:
       - name: Push frontend image
         run: docker push $DOCKER_FRONTEND:latest
 
-  test:
+  deploy:
+    needs: build
     runs-on: self-hosted
 
     steps:
-      - name: Check runner
-        run: |
-          whoami
-          hostname
-          docker ps
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Update docker Image 
-      - uses: actions/checkout@v3
-      - docker compose pull
-      - docker compose up -d
-      - docker image prune -f
+      - name: Login Docker Hub
+        run: echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+
+      - name: Pull latest images
+        run: docker compose pull
+
+      - name: Restart containers
+        run: docker compose up -d
+
+      - name: Remove old images
+        run: docker image prune -f
