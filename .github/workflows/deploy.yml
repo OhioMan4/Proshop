@@ -54,7 +54,6 @@ jobs:
           hostname
           docker ps
 
-    steps:
       - name: Update docker Image 
       - uses: actions/checkout@v3
       - docker compose pull
