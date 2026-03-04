@@ -36,14 +36,14 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/arm64 \
-            -t $DOCKER_USERNAME/e-app-backend:latest \
+            -t ${{ secrets.DOCKER_USERNAME }}/e-app-backend:latest \
             --push ./backend
 
       - name: Build & Push Frontend (ARM64)
         run: |
           docker buildx build \
             --platform linux/arm64 \
-            -t $DOCKER_USERNAME/e-app-frontend:latest \
+            -t ${{ secrets.DOCKER_USERNAME }}/e-app-frontend:latest \
             --push ./frontend
 
   deploy:
