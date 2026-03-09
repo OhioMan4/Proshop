@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'docker-compose.yml'
 
 
 
@@ -24,21 +28,20 @@ jobs:
         with:
           node-version: 20
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Install backend dependencies
         run: |
           cd backend
           npm install
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
 
       - name: Build and push backend image (arm64)
         uses: docker/build-push-action@v5
@@ -46,7 +49,7 @@ jobs:
           context: ./backend
           platforms: linux/arm64
           push: true
-          tags: ${{ env.DOCKER_BACKEND }}:latest
+          tags: ${{ env.DOCKER_BACKEND }}:${{ github.sha }}
 
       - name: Build and push frontend image (arm64)
         uses: docker/build-push-action@v5
@@ -54,26 +57,6 @@ jobs:
           context: ./frontend
           platforms: linux/arm64
           push: true
-          tags: ${{ env.DOCKER_FRONTEND }}:latest
+          tags: ${{ env.DOCKER_FRONTEND }}:${{ github.sha }}
 
-  deploy:
-    needs: build-and-push
-    runs-on: self-hosted
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Pull latest images
-        working-directory: /home/ubuntu/Proshop 
-        run: docker compose pull
-
-      - name: Restart containers
-        working-directory: /home/ubuntu/Proshop 
-        run: docker compose up -d
-
-      - name: Remove old images
-        run: docker image prune -f
+    

@@ -1,0 +1,5 @@
+resources:
+  - redis
+  - frontend
+  - backend
+  - ingress
