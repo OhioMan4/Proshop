@@ -1,0 +1,3 @@
+resources:
+  - frontend-deploymeny.yaml
+  - frontend-service.yaml
