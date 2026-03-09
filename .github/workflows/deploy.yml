@@ -46,7 +46,7 @@ jobs:
           context: ./backend
           platforms: linux/arm64
           push: true
-          tags: ${{ env.DOCKER_BACKEND }}:latest
+          tags: ${{ env.DOCKER_BACKEND }}:${{ github.sha }}
 
       - name: Build and push frontend image (arm64)
         uses: docker/build-push-action@v5
@@ -54,4 +54,4 @@ jobs:
           context: ./frontend
           platforms: linux/arm64
           push: true
-          tags: ${{ env.DOCKER_FRONTEND }}:latest
+          tags: ${{ env.DOCKER_FRONTEND }}:${{ github.sha }}
