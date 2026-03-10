@@ -18,7 +18,7 @@
 
 | Checkout | Order |
 |----------|-------|
-| ![Checkout](./docs/screenshots/checkout.png) | ![Order](./docs/screenshots/order.png) |
+| ![Checkout](./docs/screenshots/checkout.png) | ![Order](./docs/screenshots/order-detail.png) |
 
 ---
 
