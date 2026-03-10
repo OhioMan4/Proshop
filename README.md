@@ -6,7 +6,6 @@
 
 ## 📸 Application Screenshots
 
-> _Place your screenshots in `docs/screenshots/`_
 
 | Home Page | Product Detail |
 |-----------|---------------|
@@ -24,9 +23,8 @@
 
 ## 🏗️ Architecture Diagram
 
-> _Place your diagram at `docs/architecture.png`_
-
-![Architecture](./docs/architecture.png)
+![Architecture](./docs/screenshots/application.png)
+![Architecture](./docs/screenshots/CI_CD.png) 
 
 ---
 
