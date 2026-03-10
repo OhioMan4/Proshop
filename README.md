@@ -38,7 +38,7 @@
 | Backend | Node.js, Express, MongoDB, Mongoose |
 | Auth | JWT |
 | Containerization | Docker, Docker Compose |
-| Reverse Proxy | Nginx |
+| Reverse Proxy | Nginx/Traefik |
 | CI/CD | GitHub Actions, Docker Buildx (ARM64) |
 | GitOps | ArgoCD on k3s |
 | Cloud | AWS EC2 (ARM64 Graviton) |
