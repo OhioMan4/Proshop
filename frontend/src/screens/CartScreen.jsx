@@ -19,12 +19,35 @@ const glassBox = {
   p: 3,
 }
 
+const selectMenuProps = {
+  PaperProps: {
+    sx: {
+      background: '#1a1035',
+      border: '1px solid rgba(167,139,250,0.3)',
+      color: 'white',
+      '& .MuiMenuItem-root': {
+        '&:hover': { background: 'rgba(167,139,250,0.2)' },
+        '&.Mui-selected': { background: 'rgba(167,139,250,0.3)' },
+      },
+    },
+  },
+}
+
 const CartScreen = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { cartItems } = useSelector((state) => state.cart)
+  const { userInfo } = useSelector((state) => state.userLogin)
   const totalItems = cartItems.reduce((acc, item) => acc + item.qty, 0)
   const totalPrice = cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)
+
+  const checkoutHandler = () => {
+    if (userInfo) {
+      navigate('/shipping')
+    } else {
+      navigate('/login?redirect=shipping')
+    }
+  }
 
   return (
     <Box sx={{ py: 4 }}>
@@ -72,8 +95,10 @@ const CartScreen = () => {
                   <Select
                     size='small' value={item.qty}
                     onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}
+                    MenuProps={selectMenuProps}
                     sx={{
                       color: 'white', borderRadius: '10px', minWidth: 70,
+                      background: 'rgba(255,255,255,0.08)',
                       '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
                       '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(167,139,250,0.5)' },
                       '.MuiSvgIcon-root': { color: 'white' },
@@ -134,7 +159,7 @@ const CartScreen = () => {
                 variant='contained' fullWidth size='large'
                 startIcon={<ShoppingCartCheckoutIcon />}
                 disabled={cartItems.length === 0}
-                onClick={() => navigate('/login?redirect=shipping')}
+                onClick={checkoutHandler}
                 sx={{
                   borderRadius: '12px', textTransform: 'none', fontWeight: 600, py: 1.5,
                   background: 'linear-gradient(90deg, #a78bfa, #60a5fa)',

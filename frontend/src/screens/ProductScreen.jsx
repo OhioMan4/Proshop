@@ -41,6 +41,21 @@ const inputStyle = {
   '& .MuiSelect-icon': { color: 'rgba(255,255,255,0.5)' },
 }
 
+// Fix Select dropdown menu background
+const selectMenuProps = {
+  PaperProps: {
+    sx: {
+      background: '#1a1035',
+      border: '1px solid rgba(167,139,250,0.3)',
+      color: 'white',
+      '& .MuiMenuItem-root': {
+        '&:hover': { background: 'rgba(167,139,250,0.2)' },
+        '&.Mui-selected': { background: 'rgba(167,139,250,0.3)' },
+      },
+    },
+  },
+}
+
 const ProductScreen = () => {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -130,10 +145,20 @@ const ProductScreen = () => {
                 </Box>
 
                 {product.countInStock > 0 && (
-                  <FormControl fullWidth sx={{ mb: 3, ...inputStyle }}>
-                    <InputLabel>Qty</InputLabel>
-                    <Select value={qty} label='Qty' onChange={(e) => setQty(e.target.value)}
-                      sx={{ color: 'white', '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' } }}>
+                  <FormControl fullWidth sx={{ mb: 3 }}>
+                    <Select
+                      value={qty}
+                      onChange={(e) => setQty(e.target.value)}
+                      MenuProps={selectMenuProps}
+                      sx={{
+                        color: 'white', borderRadius: '12px',
+                        background: 'rgba(255,255,255,0.08)',
+                        '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
+                        '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(167,139,250,0.5)' },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#a78bfa' },
+                        '.MuiSvgIcon-root': { color: 'white' },
+                      }}
+                    >
                       {[...Array(product.countInStock).keys()].map((x) => (
                         <MenuItem key={x + 1} value={x + 1}>{x + 1}</MenuItem>
                       ))}

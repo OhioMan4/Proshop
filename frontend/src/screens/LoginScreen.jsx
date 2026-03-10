@@ -48,9 +48,10 @@ const LoginScreen = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirect = searchParams.get('redirect') || '/'
-  const { loading, error, userInfo } = useSelector((state) => state.userLogin)
 
-  useEffect(() => { if (userInfo) navigate(redirect) }, [navigate, userInfo, redirect])
+  useEffect(() => {
+    if (userInfo) navigate(`/${redirect}`.replace('//', '/'))
+  }, [navigate, userInfo, redirect])
 
   const submitHandler = (e) => { e.preventDefault(); dispatch(login(email, password)) }
 
