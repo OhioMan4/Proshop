@@ -63,4 +63,20 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_FRONTEND }}:${{ github.sha }}
 
+      - name: Update k8s frontend image tag
+        run: |
+          sed -i "s|chywiz/e-app-frontend:.*|chywiz/e-app-frontend:${{ github.sha }}|g" k8s/frontend/frontend-deployment.yaml
+
+      - name: Update k8s backend image tag
+        run: |
+          sed -i "s|chywiz/e-app-backend:.*|chywiz/e-app-backend:${{ github.sha }}|g" k8s/backend/backend-deployment.yaml
+
+      - name: Commit and push updated manifests
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add k8s/
+          git commit -m "ci: update image tags to ${{ github.sha }}"
+          git push
+
 

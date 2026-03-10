@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: chywiz/e-app-frontend:latest
+        image: chywiz/e-app-frontend:PLACEHOLDER_SHA
         ports:
         - containerPort: 80
