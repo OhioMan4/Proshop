@@ -1,11 +1,12 @@
 # 👟 ProShop — Full-Stack E-Commerce on AWS EC2
 
-> Deployed full-stack e-commerce application on AWS EC2 (ARM64 Graviton), implemented CI/CD with GitHub Actions (Buildx multi-arch), Dockerized services, configured Nginx reverse proxy, and automated production deployment using self-hosted runners.
+> Deployed full-stack e-commerce application on AWS EC2 (ARM64 Graviton), implemented CI/CD with GitHub Actions (Buildx multi-arch), Dockerized services, configured Nginx reverse proxy, and automated GitOps deployment using ArgoCD on k3s.
 
 ---
 
 ## 📸 Application Screenshots
 
+> _Place your screenshots in `docs/screenshots/`_
 
 | Home Page | Product Detail |
 |-----------|---------------|
@@ -15,15 +16,17 @@
 |------|---------|
 | ![Cart](./docs/screenshots/cart.png) | ![Profile](./docs/screenshots/profile.png) |
 
+| Checkout | Order |
+|----------|-------|
+| ![Checkout](./docs/screenshots/checkout.png) | ![Order](./docs/screenshots/order.png) |
+
 ---
 
 ## 🏗️ Architecture Diagram
 
+> _Place your diagram at `docs/architecture.png`_
 
-
-![EndUser](./docs//screenshots/application.png)
-
-![CI_CD](./docs//screenshots/CI_CD.png)
+![Architecture](./docs/architecture.png)
 
 ---
 
@@ -33,96 +36,53 @@
 |-------|-----------|
 | Frontend | React 18, Vite, MUI v5, Redux Toolkit |
 | Backend | Node.js, Express, MongoDB, Mongoose |
-| Auth | JWT (JSON Web Tokens) |
+| Auth | JWT |
 | Containerization | Docker, Docker Compose |
 | Reverse Proxy | Nginx |
-| CI/CD | GitHub Actions, Docker Buildx |
+| CI/CD | GitHub Actions, Docker Buildx (ARM64) |
+| GitOps | ArgoCD on k3s |
 | Cloud | AWS EC2 (ARM64 Graviton) |
 | Registry | Docker Hub |
 
 ---
 
-## ⚙️ CI/CD Pipeline
+## ⚙️ Environments
 
-```
-Push to main
-     │
-     ▼
-GitHub Actions (ubuntu-latest)
-     │
-     ├── Install dependencies
-     ├── Set up QEMU + Docker Buildx
-     ├── Build backend image (linux/arm64)
-     ├── Build frontend image (linux/arm64)
-     └── Push to Docker Hub
-          │
-          ▼
-     Self-Hosted Runner (EC2)
-          │
-          ├── Pull latest images
-          ├── docker compose up -d
-          └── Prune old images
-```
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js v20+
-- Docker & Docker Compose
-- MongoDB Atlas account
-
-### Local Development
-
+### 🧪 Development — Docker Compose
 ```bash
-# Clone the repo
-git clone https://github.com/chywiz/e-commerce-mern-stack.git
-cd e-commerce-mern-stack
-
-# Backend
-cd backend
-npm install
-npm run dev
-
-# Frontend (new terminal)
-cd frontend
-npm install
-npm run dev
-```
-
-### Docker (Production)
-
-```bash
-# Build and run all services
+# Run all services locally
 docker compose up --build
 
 # Seed the database
 docker exec -it <backend-container> node seeder.js
 ```
 
----
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:3000 |
+| Backend | http://localhost:5000 |
+| MongoDB | localhost:27017 |
 
-## 🔑 Environment Variables
+### 🚀 Production — k3s + ArgoCD
 
-Create a `.env` file in the `backend/` folder:
-
-```env
-NODE_ENV=production
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-FRONTEND_URL=http://your-ec2-ip
 ```
-
----
-
-## 🐳 Docker Images
-
-| Image | Docker Hub |
-|-------|-----------|
-| Backend | `chywiz/e-app-backend:latest` |
-| Frontend | `chywiz/e-app-frontend:latest` |
+Push to main (backend/** or frontend/**)
+        │
+        ▼
+GitHub Actions
+        ├── Build backend  → chywiz/e-app-backend:<sha>   (linux/arm64)
+        ├── Build frontend → chywiz/e-app-frontend:<sha>  (linux/arm64)
+        ├── Push images to Docker Hub
+        ├── Update k8s/backend/backend-deployment.yaml
+        ├── Update k8s/frontend/frontend-deployment.yaml
+        └── git commit [skip ci] & push
+                 │
+                 ▼
+        ArgoCD (k3s on EC2)
+                 ├── Detects manifest change
+                 ├── Pulls new image:<sha>
+                 └── Rolls out new deployment
+```
 
 ---
 
@@ -140,29 +100,73 @@ e-commerce-mern-stack/
 │   ├── Dockerfile
 │   └── server.js
 ├── frontend/
-│   ├── public/images/
+│   ├── public/images/       ← product images
 │   ├── src/
 │   │   ├── actions/
 │   │   ├── components/
 │   │   ├── constants/
 │   │   ├── reducers/
 │   │   └── screens/
-│   ├── Dockerfile
-│   └── nginx.conf
+│   ├── nginx.conf
+│   └── Dockerfile
+├── k8s/
+│   ├── backend/
+│   │   ├── backend-deployment.yaml   ← image tag auto-updated by CI
+│   │   └── backend-service.yaml
+│   ├── frontend/
+│   │   ├── frontend-deployment.yaml  ← image tag auto-updated by CI
+│   │   └── frontend-service.yaml
+│   └── ingress.yaml
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml
-└── docker-compose.yml
+├── docker-compose.yml        ← dev only
+└── README.md
 ```
 
 ---
 
-## 🔧 GitHub Actions Secrets Required
+## 🔑 Environment Variables
+
+Create `.env` in `backend/`:
+
+```env
+NODE_ENV=production
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+FRONTEND_URL=http://your-ec2-ip
+```
+
+For k3s, apply the secret manually on EC2:
+```bash
+kubectl apply -f k8s/backend/backend-secret.yaml
+```
+
+---
+
+## 🔧 GitHub Secrets Required
 
 | Secret | Description |
 |--------|-------------|
 | `DOCKER_USERNAME` | Docker Hub username |
 | `DOCKER_PASSWORD` | Docker Hub password |
+
+---
+
+## 🛍️ Features
+
+- ✅ Product listing with search & pagination
+- ✅ Product detail with reviews & ratings
+- ✅ Shopping cart with quantity management
+- ✅ User authentication (JWT)
+- ✅ Checkout flow (Shipping → Payment → Order)
+- ✅ Demo payment simulation
+- ✅ Admin panel (Products, Users, Orders)
+- ✅ Responsive glassmorphism UI
+- ✅ Dockerized with Nginx reverse proxy
+- ✅ CI/CD with GitHub Actions (ARM64 Buildx)
+- ✅ GitOps with ArgoCD on k3s
 
 ---
 

@@ -1,17 +1,45 @@
+# DEV ONLY — use 'docker compose up' for local testing
+# Production runs on k3s via ArgoCD
+
+version: "3.8"
+
 services:
+  mongo:
+    image: mongo:6
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
 
   backend:
-    image: chywiz/e-app-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     restart: always
-    env_file: 
-      - ./backend/.env.prod
-    expose:
-      - "5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/ecommerce
+      - JWT_SECRET=devjwtsecret
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - mongo
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
 
   frontend:
-    image: chywiz/e-app-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     restart: always
     ports:
-      - "3000:3000"
+      - "3000:80"
     depends_on:
       - backend
+
+volumes:
+  mongo-data:
