@@ -9,6 +9,9 @@ on:
       - 'frontend/**'
       - 'docker-compose.yml'
 
+permissions:
+  contents: write
+
 
 
 env:
