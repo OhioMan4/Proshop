@@ -8,6 +8,7 @@ on:
       - 'backend/**'
       - 'frontend/**'
       - 'docker-compose.yml'
+      - 'k8s/**'
 
 
 
