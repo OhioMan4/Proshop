@@ -41,7 +41,7 @@
 | GitOps | ArgoCD on k3s |
 | Cloud | AWS EC2 (ARM64 Graviton) |
 | Registry | Docker Hub |
-
+| Terraform
 ---
 
 ## ⚙️ Environments
@@ -115,6 +115,12 @@ e-commerce-mern-stack/
 │   │   ├── frontend-deployment.yaml  ← image tag auto-updated by CI
 │   │   └── frontend-service.yaml
 │   └── ingress.yaml
+├── infra/
+│   └── terraform/
+│       ├── main.tf                   ← EC2 instance (ARM64 Graviton)
+│       ├── variables.tf              ← input variables
+│       ├── outputs.tf                ← EC2 public IP, instance ID
+│       ├── provider.tf               ← AWS provider config
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml
