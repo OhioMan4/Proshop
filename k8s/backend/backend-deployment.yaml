@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: chywiz/e-app-backend:PLACEHOLDER_SHA
+          image: chywiz/e-app-backend:62c5ceb3e94afb1e33030fe311fed2b5bffe489c
 
           ports:
             - containerPort: 5000

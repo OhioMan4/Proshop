@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: chywiz/e-app-frontend:03dfb9d660e02bd4a2516b26a9aef810f869a5ba
+        image: chywiz/e-app-frontend:62c5ceb3e94afb1e33030fe311fed2b5bffe489c
         ports:
         - containerPort: 80
