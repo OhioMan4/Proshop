@@ -33,7 +33,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./frontendd
       dockerfile: Dockerfile
     restart: always
     ports:
