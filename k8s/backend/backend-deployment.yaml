@@ -36,5 +36,5 @@ spec:
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: backend-secret
+                  name: backend-env
                   key: JWT_SECRET
